@@ -1,0 +1,111 @@
+* GVT-9000 Format
+
+** 1. GPRS uploading data format
+
+<data head><protocol version>,<device IMEI>,<device name>,<GPRS real-time/stored data flag>,<date>,<time>,<GPS fixed
+flag>,<latitude>,<N/S>,<longitude>,<W/E>,<used satellite number of BDS>,<used satellite number of GPS>,<used satellite number of
+GLONASS>,<HDOP>,<speed>,<course>,<altitude>,<mileage>,<MCC>,<MNC>,<LAC>,<Cell ID>,<GSM signal strength>,<digital input>,<digital
+output>,<analog input 1>,<analog input 2>,<analog input 3>,<temperature sensor 1>,<temperature sensor 2>,<RFID>,<external accessories status>,<battery
+level>,<alert event type>;<checksum><data tail>
+
+** 2. GPRS uploading data example
+
+$MGV002,860719020193193,DeviceName,R,240214,104742,A,2238.20471,N,11401.97967,E,00,03,00,1.20,0.462,356.23,137.9,1.5,460,07,262C,0F54,25,
+0000,0000,0,0,0,28.5,28.3,,,100,Timer;!
+
+** 3. GPRS uploading data analysis
+
+|------------------------------------+---------------------------------------------------------------------------------------------------------------------------+-----------------|
+| Name                               | Description                                                                                                               |         Example |
+|------------------------------------+---------------------------------------------------------------------------------------------------------------------------+-----------------|
+| <data head>                        | Fixed character ‘$’.                                                                                                      |               $ |
+| <protocol version>                 | “MG” is fixed character, “V002” is the changeable version.                                                                |          MGV002 |
+| ,                                  | Separator.                                                                                                                |               , |
+| <device IMEI>                      | IMEI of device, fixed 15 bytes.                                                                                           | 860719020193193 |
+| <device name>                      | Device name the user set, range: 0~15 bytes.                                                                              |      DeviceName |
+|                                    | Note: device name only can use letters or numbers.                                                                        |                 |
+| <GPRS real-time/stored data flag>  | ‘R’ means this GPRS data is a real-time data, ‘S’ means this GPRS data is a stored data.                                  |               R |
+| <date>                             | System date, format: DDMMYY (day day month month year year).                                                              |          240214 |
+| <time>                             | System time, format: HHMMSS (hour hour minute minute second second).                                                      |          104742 |
+| <GPS fix flag>                     | ‘A’ means GPS fixed successfully, ‘V’ means GPS can not be fixed.                                                         |               A |
+| <latitude>                         | Latitude (degrees & minutes), format: DDMM.MMMM.                                                                          |      2238.20471 |
+| <N/S>                              | North/South indicator.                                                                                                    |               N |
+| <longitude>                        | Longitude (degrees & minutes), format: DDDMM.MMMMM.                                                                       |     11401.97967 |
+| <W/E>                              | East/West indicator.                                                                                                      |               E |
+| <used satellite number of BDS>     | The number of BDS satellite used to fix, range: 00~99.                                                                    |              00 |
+| <used satellite number of GPS>     | The number of GPS satellite used to fix, range: 00~99.                                                                    |              03 |
+| <used satellite number of GLONASS> | The number of GLONASS satellite used to fix, range: 00~99.                                                                |              00 |
+| <HDOP>                             | Horizontal dilution of precision.                                                                                         |            1.20 |
+| <speed>                            | Speed over ground, unit: knot.                                                                                            |           0.462 |
+| <course>                           | Course over ground, unit: degree.                                                                                         |          356.23 |
+| <altitude>                         | Altitude, unit: meter.                                                                                                    |           137.9 |
+| <mileage>                          | Mileage, unit: Km.                                                                                                        |             1.5 |
+| <MCC>                              | Mobile country code.                                                                                                      |             460 |
+| <MNC>                              | Mobile network code.                                                                                                      |              07 |
+| <LAC>                              | Location area code.                                                                                                       |            262C |
+| <Cell ID>                          | Cell ID.                                                                                                                  |            0F54 |
+| <GSM signal strength>              | GSM signal strength, range: 00~99.                                                                                        |              25 |
+| <digital input>                    | Status of digital input, example shows four digital inputs (‘0’ means the low level, ‘1’ means the high level).           |            0000 |
+| <digital output>                   | Status of digital output, example shows four digital outputs (‘0’ means disable the output, ‘1’ means enable the output). |            0000 |
+| <analog input 1>                   | Detected value of analog input 1, range: 0~4096.                                                                          |               0 |
+| <analog input 2>                   | Detected value of analog input 2, range: 0~4096.                                                                          |               0 |
+| <analog input 3>                   | Detected value of analog input 3, range: 0~4096.                                                                          |               0 |
+| <temperature sensor 1>             | Detected value of temperature sensor 1, unit: degree.                                                                     |            28.5 |
+| <temperature sensor 2>             | Detected value of temperature sensor 2, unit: degree.                                                                     |            28.3 |
+| <RFID>                             | RFID information (reserved).                                                                                              |                 |
+| <external accessories status>      | Status of external accessories (reserved).                                                                                |                 |
+| <battery level>                    | Battery level, range: 000~100.                                                                                            |             100 |
+| <alert event type>                 | Alert event type, see alert event type table.                                                                             |           Timer |
+| ;                                  | End mark.                                                                                                                 |               ; |
+| <checksum>                         | Checksum (reserved).                                                                                                      |                 |
+| <data tail>                        | Fixed character ‘!’.                                                                                                      |               ! |
+|                                    |                                                                                                                           |                 |
+|------------------------------------+---------------------------------------------------------------------------------------------------------------------------+-----------------|
+
+** 4. Alert event type table
+Type name
+PW ON Describe
+Device power on by hardware alarm Note
+This alarm will be sent after device restarted every time
+SOS Over Speed SOS emergency calling alarm
+Over speed alarm This alarm will be sent after pressed SOS button
+This alarm will be sent when the speed actual value higher than speed setting value
+Normal Speed Return to normal speed alarm This alarm will be sent when the speed limit value lower than setting value
+Low Battery Low battery alarm This alarm will be sent when the battery level is lower than setting value
+Low Extern Voltage Low external voltage alarm This alarm will be sent when the external voltage lower than setting value
+GPS Lost No GPS signal alarm This alarm will be sent when device failed to connected GPS
+GPS Regained GPS regained alarm This alarm will be sent when device regained GPS signal
+GPS Cut GPS antenna cut off alarm This alarm will be sent when GPS antenna cut off
+IN1 ON IN1 turn to ON alarm This alarm will be sent when digital input 1 turn to ON
+IN1 OFF IN1 turn to OFF alarm This alarm will be sent when digital input 1 turn to OFF
+IN2 ON IN2 turn to ON alarm This alarm will be sent when digital input 2 turn to ON
+IN2 OFF IN2 turn to OFF alarm This alarm will be sent when digital input 2 turn to OFF
+PSR External voltage connected alarm This alarm will be sent when external voltage connected
+PSD External voltage disconnected alarm This alarm will be sent when external voltage disconnected
+ACC ON ACC turn to ONalarm This alarm will be sent when ACC turn to ON
+ACC OFF ACC turn to OFF alarm This alarm will be sent when ACC turn to OFF
+Corner Car cornering alarm This alarm will be sent when the car is cornering
+Geo1 In Moves in the Geo-fence 1 alarm This alarm will be sent when device moves in Geo-fence 1
+Geo2 In Moves in the Geo-fence 2 alarm This alarm will be sent when device moves in Geo-fence 2
+Geo3 In Moves in the Geo-fence 3 alarm This alarm will be sent when device moves in Geo-fence 3
+Geo4 In Moves in the Geo-fence 4 alarm This alarm will be sent when device moves in Geo-fence 4
+Geo5 In Moves in the Geo-fence 5 alarm This alarm will be sent when device moves in Geo-fence 5
+Geo1 Out Moves out the Geo-fence 1 alarm This alarm will be sent when device moves out Geo-fence 1
+Geo2 Out Moves out the Geo-fence 2 alarm This alarm will be sent when device moves out Geo-fence 2
+Geo3 Out Moves out the Geo-fence 3 alarm This alarm will be sent when device moves out Geo-fence 3
+Geo4 Out Moves out the Geo-fence 4 alarm This alarm will be sent when device moves out Geo-fence 4
+Geo5 Out Moves out the Geo-fence 5 alarm This alarm will be sent when device moves out Geo-fence 5
+Shift01 Shifts device out the preset area 1 alarm This alarm will be sent when device moves out the preset area 1
+Shift02 Shifts device out the preset area 2 alarm This alarm will be sent when device moves out the preset area 2
+Shift03 Shifts device out the preset area 3 alarm This alarm will be sent when device moves out the preset area 3
+VS Stop the car from moving alarm This alarm will be sent when the car stop from moving
+VM Start the car alarm This alarm will be sent when start the car
+Dist Tracking by distance alarm This alarm will be sent when device tracking by distance
+Timer Tracking by regularly This alarm will be sent when device tracking by every timer
+SMS Timer Send alarm SMS by timing This alarm will be sent when device send alarm SMS by timing
+Hit Hitting alarm This alarm will be sent when device detected hitting
+Fatigue Fatigue driving alarm This alarm will be sent when user into fatigue driving
+Get RFID Get RFID alarm This alarm will be
+Take photo Take a photo alarm This alarm will be sent when device take a photo every time
+Unknow Unknow alarm This alarm will be sent when device detected any un-know alarm
+sent when device get RFID
