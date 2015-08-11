@@ -1,6 +1,8 @@
 #ifndef GVT_H
 #define GVT_H
 
+#include <stdbool.h>
+
 struct gvtData {
         char version[7];     /* protocol version */
         char imei[16];    /* device IMEI */
@@ -45,6 +47,6 @@ struct gvtData {
 };
 
 
-void gvtExtract(char *gvtStr, struct gvtData *gvtData);
+bool gvtExtract(char *gvtStr, struct gvtData *gvtData);
 
 #endif /* GVT_H */
