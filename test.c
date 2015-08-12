@@ -21,7 +21,7 @@ void testExtractGvt(char* version, char *imei, char *name, char RS,
                     /* char rfid,         /\* (reserved) RFID *\/ */
                     /* char external,     /\* (reserved) external accessories status *\/ */
                     char battery, char alert[25])
-                    /* char checksum,      /\* (reserved) checksum *\/ */
+/* char checksum,      /\* (reserved) checksum *\/ */
 {
         struct gvtData data;
         char gvtStr[512];
@@ -41,6 +41,31 @@ void testExtractGvt(char* version, char *imei, char *name, char RS,
         expect("time", strcmp(data.time, time) == 0);
         expect("fixable", data.fixable == fixable);
         expect("latitude", strcmp(data.latitude, latitude) == 0);
+        expect("NS", data.NS == NS);
+        expect("longitude", strcmp(data.longitude, longitude) == 0);
+        expect("WE", data.WE == WE);
+        expect("usedBds", strcmp(data.usedBds, usedBds) == 0);
+        expect("usedGps", strcmp(data.usedGps, usedGps) == 0);
+        expect("usedGlonass", strcmp(data.usedGlonass, usedGlonass) == 0);
+        expect("hdop", data.hdop == hdop);
+        expect("speed", data.speed == speed);
+        expect("course", data.course == course);
+        expect("altitude", data.altitude == altitude);
+        expect("mileage", data.mileage == mileage);
+        expect("mcc", strcmp(data.mcc, mcc) == 0);
+        expect("mnc", strcmp(data.mnc, mnc) == 0);
+        expect("lac", strcmp(data.lac, lac) == 0);
+        expect("cellId", strcmp(data.cellId, cellId) == 0);
+        expect("gsmSignal", data.gsmSignal == gsmSignal);
+        expect("digitalInFlags", data.digitalInFlags == digitalInFlags);
+        expect("digitalOutFlags", data.digitalOutFlags == digitalOutFlags);
+        expect("analog1", data.analog1 == analog1);
+        expect("analog2", data.analog2 == analog2);
+        expect("analog3", data.analog3 == analog3);
+        expect("temperature1", data.temperature1 == temperature1);
+        expect("temperature2", data.temperature2 == temperature2);
+        expect("battery", data.battery == battery);
+        expect("alert", strcmp(data.alert, alert) == 0);
 }
 
 int main()
@@ -58,5 +83,27 @@ int main()
                        0.462f, 356.23f, 137.9f, 1.5f, "460", "07", "262C",
                        "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
                        28.3f, 100, "Timer");
+
+        testExtractGvt("MGV002", "860719020193193", "DeviceName3", 'R',
+                       "240214", "104742", 'A', "2238.20471",
+                       'N', "11401.97967", 'E', "00", "03", "00", 1.20f,
+                       0.462f, 356.23f, 137.9f, 1.5f, "460", "07", "262C",
+                       "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
+                       28.3f, 100, "Timer");
+
+        testExtractGvt("MGV002", "860719020193193", "DeviceName4", 'R',
+                       "240214", "104742", 'A', "2238.20471",
+                       'N', "11401.97967", 'E', "00", "03", "00", 1.20f,
+                       0.462f, 356.23f, 137.9f, 1.5f, "460", "07", "262C",
+                       "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
+                       28.3f, 100, "Timer");
+
+        testExtractGvt("MGV002", "867714727193193", "DeviceName5", 'R',
+                       "240215", "104795", 'A', "2238.20471",
+                       'N', "11401.97967", 'E', "00", "03", "00", 1.20f,
+                       0.462f, 356.23f, 137.9f, 1.5f, "460", "07", "262C",
+                       "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
+                       28.3f, 100, "Timer");
+
         return 0;
 }

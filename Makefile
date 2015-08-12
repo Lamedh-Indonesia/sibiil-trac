@@ -1,5 +1,5 @@
 WARNINGS=-Wall -W
-CFLAGS=$(WARNINGS)
+CFLAGS=$(WARNINGS) -g
 
 all: tra.o redis test
 	gcc tra.o hiredis/libhiredis.a -o trac -lev

@@ -30,7 +30,7 @@ void getCallback(redisAsyncContext *ctx, void *r, void *privdata)
         redisAsyncDisconnect(ctx);
 }
 
-int main(int argc, char **argv)
+int main()
 {
         signal(SIGPIPE, SIG_IGN);
 
