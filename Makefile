@@ -1,15 +1,19 @@
+OBJ=reg-redis.o reg-tcp.o tra.o
 WARNINGS=-Wall -W
 CFLAGS=$(WARNINGS) -g
 
-all: tra.o redis test
-	gcc tra.o hiredis/libhiredis.a -o trac -lev
+all: trac
+trac: $(OBJ) hiredis/libhiredis.a
+	gcc $(OBJ) hiredis/libhiredis.a -o trac -lev
 
 # Deps (use make dep to generate this)
 gvt.o: gvt.c gvt.h
-test.o: test.c gvt.h
-tra.o: tra.c hiredis/hiredis.h hiredis/read.h hiredis/sds.h \
+reg-redis.o: reg-redis.c hiredis/hiredis.h hiredis/read.h hiredis/sds.h \
  hiredis/async.h hiredis/hiredis.h hiredis/adapters/libev.h \
- hiredis/adapters/../hiredis.h hiredis/adapters/../async.h
+ hiredis/adapters/../hiredis.h hiredis/adapters/../async.h reg-ev.h
+reg-tcp.o: reg-tcp.c reg-ev.h
+test.o: test.c gvt.h
+tra.o: tra.c reg-ev.h
 
 redis:
 	cd hiredis && $(MAKE)
