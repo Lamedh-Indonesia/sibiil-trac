@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -100,33 +101,6 @@ static bool fill(int gvtField, char *buff, struct gvtData *gvtData)
                 strcpy(gvtData->usedGlonass, buff);
                 break;
         case GVT_HDOP:
-                gvtData->hdop = atof(buff);
-                break;
-        case GVT_SPEED:
-                gvtData->speed = atof(buff);
-                break;
-        case GVT_COURSE:
-                gvtData->course = atof(buff);
-                break;
-        case GVT_ALTITUDE:
-                gvtData->altitude = atof(buff);
-                break;
-        case GVT_MILEAGE:
-                gvtData->mileage = atof(buff);
-                break;
-        case GVT_MCC:
-                strcpy(gvtData->mcc, buff);
-                break;
-        case GVT_MNC:
-                strcpy(gvtData->mnc, buff);
-                break;
-        case GVT_LAC:
-                strcpy(gvtData->lac, buff);
-                break;
-        case GVT_CELLID:
-                strcpy(gvtData->cellId, buff);
-                break;
-        case GVT_GSM_SIGNAL:
                 gvtData->gsmSignal = atoi(buff);
                 break;
         case GVT_DIGITAL_IN_FLAGS:
@@ -216,4 +190,28 @@ bool gvtExtract(char* gvtStr, struct gvtData *gvtData)
         result &= check(&c, ';');
         result &= check(&c, '!');
         return result;
+}
+
+void genRedisInsertCommand(char *command, struct gvtData *gvtData)
+{
+        static int sequence = 1;
+        char key[25];
+        sprintf(key, "gvt:%s:%d", gvtData->imei, sequence++);
+        sprintf(command, "hmset %s version \"%s\" "
+                "imei \"%s\" "
+                "name \"%s\" "
+                "RS %c "
+                "date \"%s\" "
+                "time \"%s\" "
+                "fixable %c "
+                "latitude \"%s\" "
+                "NS %c "
+                "longitude \"%s\" "
+                "WE %c "
+                "usedBds \"%s\" "
+                "usedGps \"%s\" "
+                "usedGlonass \"%s\" ",
+                key, gvtData->version, gvtData->imei, gvtData->name, gvtData->RS, gvtData->date,
+                gvtData->time, gvtData->fixable, gvtData->latitude, gvtData->NS, gvtData->longitude,
+                gvtData->WE, gvtData->usedBds, gvtData->usedGps, gvtData->usedGlonass);
 }

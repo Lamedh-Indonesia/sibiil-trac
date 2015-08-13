@@ -1,4 +1,4 @@
-OBJ=reg-redis.o reg-tcp.o tra.o
+OBJ=reg-redis.o reg-tcp.o tra.o gvt.o
 WARNINGS=-Wall -W
 CFLAGS=$(WARNINGS) -g
 

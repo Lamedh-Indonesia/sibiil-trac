@@ -31,7 +31,7 @@ void testExtractGvt(char* version, char *imei, char *name, char RS,
                 hdop, speed, course, altitude, mileage, mcc, mnc, lac, cellId, gsmSignal, digitalInFlags, digitalOutFlags,
                 analog1, analog2, analog3, temperature1, temperature2, battery, alert);
 
-        gvtExtract(gvtStr, &data);
+        expect("gvtExtract return true", gvtExtract(gvtStr, &data));
 
         expect("version", strcmp(data.version, version) == 0);
         expect("imei", strcmp(data.imei, imei) == 0);
@@ -105,5 +105,6 @@ int main()
                        "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
                        28.3f, 100, "Timer");
 
+        printf("Tests: %d, failed: %d\n", tests, fails);
         return 0;
 }

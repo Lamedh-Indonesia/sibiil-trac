@@ -7,6 +7,7 @@
 #include "hiredis/hiredis.h"
 #include "hiredis/async.h"
 #include "reg-ev.h"
+#include "gvt.h"
 
 #define BUFFER_SIZE 1024
 
@@ -37,7 +38,18 @@ static void readHandler(EV_P_ struct ev_io *watcher, int revents)
         }
         else printf("Client sended: %s\n", buffer);
 
-        redisAsyncCommand(redisCtx, NULL, NULL, "SET test %s", buffer);
+        struct gvtData gvtData;
+        gvtExtract(buffer, &gvtData);
+        printf("Received from %s\n", gvtData.name);
+
+        static int sequence = 1;
+        char key[50];
+        sprintf(key, "gvt:%s:%d", gvtData.imei, sequence++);
+        char command[256];
+        genRedisInsertCommand(command, &gvtData);
+        printf("sending %s command to redis\n", command);
+        redisAsyncCommand(redisCtx, NULL, NULL, command);
+
         send(watcher->fd, buffer, n, 0);
         bzero(buffer, n);
 }
