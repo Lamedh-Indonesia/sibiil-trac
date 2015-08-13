@@ -101,6 +101,33 @@ static bool fill(int gvtField, char *buff, struct gvtData *gvtData)
                 strcpy(gvtData->usedGlonass, buff);
                 break;
         case GVT_HDOP:
+                gvtData->hdop = atof(buff);
+                break;
+        case GVT_SPEED:
+                gvtData->speed = atof(buff);
+                break;
+        case GVT_COURSE:
+                gvtData->course = atof(buff);
+                break;
+        case GVT_ALTITUDE:
+                gvtData->altitude = atof(buff);
+                break;
+        case GVT_MILEAGE:
+                gvtData->mileage = atof(buff);
+                break;
+        case GVT_MCC:
+                strcpy(gvtData->mcc, buff);
+                break;
+        case GVT_MNC:
+                strcpy(gvtData->mnc, buff);
+                break;
+        case GVT_LAC:
+                strcpy(gvtData->lac, buff);
+                break;
+        case GVT_CELLID:
+                strcpy(gvtData->cellId, buff);
+                break;
+        case GVT_GSM_SIGNAL:
                 gvtData->gsmSignal = atoi(buff);
                 break;
         case GVT_DIGITAL_IN_FLAGS:
@@ -130,8 +157,9 @@ static bool fill(int gvtField, char *buff, struct gvtData *gvtData)
         case GVT_ALERT:
                 strcpy(gvtData->alert, buff);
                 break;
+        default:
+                return false;
         }
-
         return true;
 }
 
