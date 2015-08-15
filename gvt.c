@@ -220,11 +220,10 @@ bool gvtExtract(char* gvtStr, struct gvtData *gvtData)
         return result;
 }
 
-void genRedisInsertCommand(char *command, struct gvtData *gvtData)
+void genRedisInsertCommand(char *command, struct gvtData *gvtData, unsigned int sequence)
 {
-        static int sequence = 1;
         char key[25];
-        sprintf(key, "gvt:%s:%d", gvtData->imei, sequence++);
+        sprintf(key, "gvt:%s:%d", gvtData->imei, sequence);
         sprintf(command, "hmset %s version \"%s\" "
                 "imei \"%s\" "
                 "name \"%s\" "

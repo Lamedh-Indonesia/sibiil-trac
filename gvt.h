@@ -47,6 +47,6 @@ struct gvtData {
 };
 
 bool gvtExtract(char *gvtStr, struct gvtData *gvtData);
-void genRedisInsertCommand(char *command, struct gvtData *gvtData);
+void genRedisInsertCommand(char *command, struct gvtData *gvtData, unsigned int sequence);
 
 #endif /* GVT_H */

@@ -72,12 +72,12 @@ void htSet(struct hashtable *hashtable, char *key, void *value, int size)
                 next = next->next;
         }
 
-        /* there's already a pair.  let's replace that string. */
+        /* there's already a pair, let's replace that value. */
         if (next != NULL && next->key != NULL && strcmp(key, next->key) == 0) {
                 free(next->value);
-                next->value = strdup(value);
-                /* nope, could't find it.  time to grow a pair. */
-        } else {
+                next->value = malloc(size);
+                memcpy(next->value, value, size);
+        } else { /* nope, couldn't find it.  time to grow a pair. */
                 struct htEntry *newpair = NULL;
                 newpair = htNewpair(key, value, size);
                 /* we're at the start of the linked list in this bin. */

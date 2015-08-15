@@ -6,6 +6,7 @@
 
 #include "hiredis/hiredis.h"
 #include "hiredis/async.h"
+#include "ht.h"
 #include "reg-ev.h"
 #include "gvt.h"
 
@@ -13,6 +14,8 @@
 
 extern redisAsyncContext *redisCtx;
 static int totalClients;
+
+static struct hashtable* htImeiSequence;
 
 static void readHandler(EV_P_ struct ev_io *watcher, int revents)
 {
@@ -42,16 +45,16 @@ static void readHandler(EV_P_ struct ev_io *watcher, int revents)
         gvtExtract(buffer, &gvtData);
         printf("Received from %s\n", gvtData.name);
 
-        static int sequence = 1;
-        char key[50];
-        sprintf(key, "gvt:%s:%d", gvtData.imei, sequence++);
+        int *res = (int*)htGet(htImeiSequence, gvtData.imei);
+        int sequence = res == NULL? 1 : *res;
+        printf("%d %s\n", sequence, gvtData.imei);
         char command[256];
-        genRedisInsertCommand(command, &gvtData);
-        printf("sending %s command to redis\n", command);
+        genRedisInsertCommand(command, &gvtData, sequence++);
+        printf("sending to redis: %s\n", command);
         redisAsyncCommand(redisCtx, NULL, NULL, command);
-
-        send(watcher->fd, buffer, n, 0);
-        bzero(buffer, n);
+        printf("set %s %d\n", gvtData.imei, sequence);
+        htSet(htImeiSequence, gvtData.imei, &sequence, sizeof(int));
+        printf("%d\n", sizeof(int));
 }
 
 static void acceptHandler(EV_P_ struct ev_io *watcher, int revents)
@@ -82,6 +85,9 @@ bool registerTcp()
         bind(serverSd, (struct sockaddr*) &addr, sizeof(addr));
         listen(serverSd, 2);
         printf("listening to %d\n", 8088);
+
+        htImeiSequence = htCreate(1 << 16); /* 64K bytes hash table */
+
         struct ev_io *watcher = (struct ev_io*) malloc(sizeof(struct ev_io)); // watcher for new connection
         ev_io_init(watcher, acceptHandler, serverSd, EV_READ); // bind the watcher to the handler
         ev_io_start(EV_DEFAULT_ watcher); // register the watcher to the event loop
