@@ -110,15 +110,45 @@ void testHashtable()
 {
         struct hashtable *ht = htCreate( 65536 );
 
-        htSet(ht, "key1", "inky");
-        htSet(ht, "key2", "pinky");
-        htSet(ht, "key3", "blinky");
-        htSet(ht, "key4", "floyd");
+        htSet(ht, "key1", "inky", strlen("inky") + 1);
+        htSet(ht, "key2", "pinky", strlen("pingky") + 1);
+        htSet(ht, "key3", "blinky", strlen("blinky") + 1);
+        htSet(ht, "key4", "floyd", strlen("floyd") + 1);
+
+        int n = 5;
+        htSet(ht, "key5", &n, sizeof(int)); n++;
+        htSet(ht, "key6", &n, sizeof(int)); n++;
+        htSet(ht, "key7", &n, sizeof(int)); n++;
+        htSet(ht, "key8", &n, sizeof(int)); n++;
+
+        struct gvtData gvtData;
+
+        strcpy(gvtData.imei, "IMEI");
+        gvtData.speed = 500.f;
+        htSet(ht, "key9", &gvtData, sizeof(gvtData));
+
+        strcpy(gvtData.imei, "imei");
+        gvtData.speed = 1000.f;
+        htSet(ht, "key10", &gvtData, sizeof(gvtData));
 
         expect("hash key1 is inky", strcmp(htGet(ht, "key1"), "inky") == 0);
-        expect("hash key2 is inky", strcmp(htGet(ht, "key2"), "pinky") == 0);
-        expect("hash key3 is inky", strcmp(htGet(ht, "key3"), "blinky") == 0);
-        expect("hash key4 is inky", strcmp(htGet(ht, "key4"), "floyd") == 0);
+        expect("hash key2 is pinky", strcmp(htGet(ht, "key2"), "pinky") == 0);
+        expect("hash key3 is blinky", strcmp(htGet(ht, "key3"), "blinky") == 0);
+        expect("hash key4 is floyd", strcmp(htGet(ht, "key4"), "floyd") == 0);
+
+        expect("hash key5 is 5", *htGet(ht, "key5") == 5);
+        expect("hash key6 is 6", *htGet(ht, "key6") == 6);
+        expect("hash key7 is 7", *htGet(ht, "key7") == 7);
+        expect("hash key8 is 8", *htGet(ht, "key8") == 8);
+
+        struct gvtData *data;
+        data = (struct gvtData*)htGet(ht, "key9");
+        expect("hash key9 imei is IMEI", strcmp(data->imei, "IMEI") == 0);
+        expect("hash key9 speed is 500.f", data->speed == 500.f);
+
+        data = (struct gvtData*)htGet(ht, "key10");
+        expect("hash key10 imei is IMEI", strcmp(data->imei, "imei") == 0);
+        expect("hash key10 speed is 1000.f", data->speed == 1000.f);
 }
 
 int main()
@@ -126,6 +156,6 @@ int main()
         testGvt();
         testHashtable();
 
-        printf("Tests: %d, failed: %d\n", tests, fails);
+        printf("Tests: %d, F: %d\n", tests, fails);
         return 0;
 }
