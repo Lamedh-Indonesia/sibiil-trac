@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "gvt.h"
+#include "ht.h"
 
 static int tests = 0, fails = 0;
 #define test(_s) { printf("#%02d %s ", ++tests, _s); }
@@ -20,8 +21,7 @@ void testExtractGvt(char* version, char *imei, char *name, char RS,
                     float temperature1, float temperature2,
                     /* char rfid,         /\* (reserved) RFID *\/ */
                     /* char external,     /\* (reserved) external accessories status *\/ */
-                    char battery, char alert[25])
-/* char checksum,      /\* (reserved) checksum *\/ */
+                    char battery, char alert[25]) /* char checksum,      /\* (reserved) checksum *\/ */
 {
         struct gvtData data;
         char gvtStr[512];
@@ -68,7 +68,7 @@ void testExtractGvt(char* version, char *imei, char *name, char RS,
         expect("alert", strcmp(data.alert, alert) == 0);
 }
 
-int main()
+void testGvt()
 {
         testExtractGvt("MGV002", "860719020193193", "DeviceName", 'R',
                        "240214", "104742", 'A', "2238.20471",
@@ -104,6 +104,27 @@ int main()
                        0.462f, 356.23f, 137.9f, 1.5f, "460", "07", "262C",
                        "0F54", 25, 0, 0, 0, 0, 0, 28.5f,
                        28.3f, 100, "Timer");
+}
+
+void testHashtable()
+{
+        struct hashtable *ht = htCreate( 65536 );
+
+        htSet(ht, "key1", "inky");
+        htSet(ht, "key2", "pinky");
+        htSet(ht, "key3", "blinky");
+        htSet(ht, "key4", "floyd");
+
+        expect("hash key1 is inky", strcmp(htGet(ht, "key1"), "inky") == 0);
+        expect("hash key2 is inky", strcmp(htGet(ht, "key2"), "pinky") == 0);
+        expect("hash key3 is inky", strcmp(htGet(ht, "key3"), "blinky") == 0);
+        expect("hash key4 is inky", strcmp(htGet(ht, "key4"), "floyd") == 0);
+}
+
+int main()
+{
+        testGvt();
+        testHashtable();
 
         printf("Tests: %d, failed: %d\n", tests, fails);
         return 0;
